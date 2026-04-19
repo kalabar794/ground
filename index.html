@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Ground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #edf8f1;
+      --bg-elevated: #f7fbf8;
+      --panel: rgba(255, 255, 255, 0.52);
+      --panel-strong: rgba(255, 255, 255, 0.72);
+      --panel-border: rgba(154, 196, 172, 0.22);
+      --panel-border-soft: rgba(154, 196, 172, 0.14);
+      --accent: #93c6ab;
+      --accent-soft: rgba(147, 198, 171, 0.28);
+      --text: #28483c;
+      --secondary: #6f8f81;
+      --soft: rgba(255, 255, 255, 0.62);
+      --transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+      --circle-size: min(77vw, 342px);
+      --shadow: 0 26px 64px rgba(129, 170, 148, 0.14);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      overflow: hidden;
+    }
+
+    body {
+      font-size: 18px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      font-feature-settings: "cv01", "ss03";
+    }
+
+    button, input, select {
+      font: inherit;
+      color: inherit;
+    }
+
+    .site {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+      gap: 14px;
+      background:
+        radial-gradient(ellipse at 12% 18%, rgba(255,255,255,0.92), transparent 26%),
+        radial-gradient(ellipse at 84% 14%, rgba(210, 239, 223, 0.92), transparent 34%),
+        radial-gradient(ellipse at 50% 42%, rgba(189, 228, 204, 0.62), transparent 40%),
+        radial-gradient(ellipse at 50% 88%, rgba(231, 245, 236, 0.9), transparent 34%),
+        linear-gradient(180deg, #f5fcf7 0%, #eaf7ef 44%, #e2f1e7 100%);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 2px 0 4px;
+    }
+
+    .brand {
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--secondary);
+    }
+
+    .back-breath {
+      min-height: 60px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      background: linear-gradient(180deg, rgba(255,255,255,0.74), rgba(255,255,255,0.42));
+      box-shadow: 0 12px 28px rgba(123, 169, 146, 0.12);
+      backdrop-filter: blur(20px);
+      transition: background var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+
+    .back-breath:active,
+    .back-breath:focus-visible,
+    .control-button:active,
+    .control-button:focus-visible,
+    .sound-row button:active,
+    .sound-row button:focus-visible,
+    .nav button:active,
+    .nav button:focus-visible,
+    .tile:active,
+    .tile:focus-visible,
+    .next-prompt:active,
+    .next-prompt:focus-visible,
+    .pattern-button:active,
+    .pattern-button:focus-visible,
+    .sound-toggle:active,
+    .sound-toggle:focus-visible {
+      outline: none;
+      background: rgba(143, 185, 167, 0.14);
+      border-color: rgba(143, 185, 167, 0.26);
+    }
+
+    main {
+      min-height: 0;
+      position: relative;
+      display: grid;
+    }
+
+    .panel {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: opacity var(--transition), transform var(--transition);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .panel.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      min-height: 0;
+    }
+
+    .eyebrow {
+      color: var(--secondary);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .headline {
+      font-size: clamp(28px, 6vw, 36px);
+      line-height: 1.15;
+      font-weight: 600;
+      text-align: center;
+      margin: 0;
+    }
+
+    .subtle {
+      color: var(--secondary);
+      margin: 0;
+      text-align: center;
+      max-width: 28rem;
+      line-height: 1.55;
+    }
+
+    .breath-circle-wrap {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .breath-circle {
+      width: var(--circle-size);
+      height: var(--circle-size);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 24%, rgba(255,255,255,0.96), transparent 24%),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.72), rgba(204, 236, 216, 0.82) 50%, rgba(155, 201, 176, 0.42) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.78);
+      box-shadow: 0 30px 72px rgba(128, 173, 150, 0.16), inset 0 1px 0 rgba(255,255,255,0.88), inset 0 -22px 40px rgba(150, 198, 174, 0.14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 28px;
+      transform: scale(0.88);
+      transition: transform var(--transition), background var(--transition), border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .breath-circle.expanded {
+      transform: scale(1.035);
+      box-shadow: 0 34px 84px rgba(128, 173, 150, 0.18), 0 0 0 18px rgba(255,255,255,0.26);
+    }
+
+    .breath-circle.hold {
+      transform: scale(0.975);
+      background:
+        radial-gradient(circle at 30% 24%, rgba(255,255,255,0.9), transparent 24%),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.64), rgba(204, 236, 216, 0.72) 50%, rgba(155, 201, 176, 0.38) 100%);
+    }
+
+    .breath-label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .phase {
+      font-size: clamp(30px, 7vw, 40px);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .seconds {
+      color: var(--secondary);
+      font-size: clamp(18px, 4.6vw, 22px);
+    }
+
+    .pattern-row,
+    .actions-row,
+    .sound-actions,
+    .sound-volume,
+    .ground-card,
+    .words-card,
+    .time-card,
+    .reset-grid {
+      width: min(100%, 520px);
+      margin: 0 auto;
+    }
+
+    .pattern-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 6px;
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.58), rgba(255,255,255,0.28));
+      border: 1px solid rgba(255,255,255,0.62);
+      box-shadow: 0 18px 42px rgba(120, 165, 144, 0.1);
+      backdrop-filter: blur(16px);
+    }
+
+    .pattern-button,
+    .control-button,
+    .sound-row button,
+    .sound-toggle,
+    .next-prompt,
+    .tile,
+    .nav button {
+      min-height: 60px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.6);
+      background: linear-gradient(180deg, rgba(255,255,255,0.58), rgba(255,255,255,0.26));
+      box-shadow: 0 14px 34px rgba(120, 165, 144, 0.08);
+      backdrop-filter: blur(18px);
+      transition: background var(--transition), border-color var(--transition), transform var(--transition), opacity var(--transition);
+    }
+
+    .pattern-button {
+      padding: 12px 10px;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--secondary);
+    }
+
+    .pattern-button.active,
+    .sound-row button.active,
+    .nav button.active,
+    .tile.done,
+    .sound-toggle.active {
+      background: linear-gradient(180deg, rgba(212, 240, 223, 0.98), rgba(177, 220, 197, 0.8));
+      border-color: rgba(147, 198, 171, 0.46);
+      color: var(--text);
+    }
+
+    .actions-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .control-button {
+      min-height: 80px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, rgba(171, 216, 193, 0.98), rgba(140, 196, 168, 0.82));
+      border-color: rgba(127, 180, 155, 0.36);
+      box-shadow: 0 20px 42px rgba(115, 170, 145, 0.2), inset 0 1px 0 rgba(255,255,255,0.55);
+    }
+
+    .sound-shell,
+    .ground-card,
+    .words-card,
+    .time-card,
+    .tile {
+      background: linear-gradient(180deg, rgba(255,255,255,0.46), rgba(255,255,255,0.24));
+      border: 1px solid rgba(255,255,255,0.54);
+      border-radius: 24px;
+      box-shadow: 0 22px 50px rgba(120, 165, 144, 0.13);
+      backdrop-filter: blur(20px);
+    }
+
+    .sound-shell {
+      width: min(100%, 560px);
+      margin: auto;
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .sound-toggle {
+      width: 100%;
+      padding: 0 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sound-details {
+      display: grid;
+      gap: 14px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height var(--transition), opacity var(--transition), padding var(--transition);
+      padding: 0 4px;
+    }
+
+    .sound-shell.open .sound-details {
+      max-height: 520px;
+      opacity: 1;
+      padding: 4px;
+    }
+
+    .sound-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    .sound-row button {
+      padding: 12px 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+
+    .sound-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--secondary);
+      font-size: 16px;
+    }
+
+    .sound-volume {
+      display: grid;
+      gap: 10px;
+      color: var(--secondary);
+    }
+
+    .sound-volume input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      min-height: 60px;
+      background: transparent;
+    }
+
+    .ground-card,
+    .words-card,
+    .time-card {
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+      margin: auto;
+    }
+
+    .ground-step {
+      display: none;
+      gap: 12px;
+    }
+
+    .ground-step.active {
+      display: grid;
+    }
+
+    .prompt-count {
+      color: var(--secondary);
+      font-size: 14px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .prompt-text,
+    .words-text,
+    .time-copy {
+      font-size: clamp(24px, 5.8vw, 32px);
+      line-height: 1.18;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .next-prompt {
+      width: 100%;
+      padding: 0 18px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .reset-grid {
+      display: grid;
+      gap: 12px;
+      margin: auto;
+    }
+
+    .tile {
+      padding: 20px;
+      display: grid;
+      gap: 10px;
+      text-align: left;
+      width: 100%;
+    }
+
+    .tile h3 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .tile p,
+    .tile .tile-meta,
+    .time-meta,
+    .words-meta {
+      margin: 0;
+      color: var(--secondary);
+    }
+
+    .tile .tile-state {
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 14px;
+      color: var(--accent);
+    }
+
+    .timer {
+      font-size: clamp(42px, 11vw, 68px);
+      line-height: 1;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .words-text {
+      min-height: 8.4rem;
+      display: flex;
+      align-items: center;
+      transition: opacity var(--transition), transform var(--transition);
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .words-text.fading {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: nowrap;
+      overflow: hidden;
+      padding-top: 4px;
+      padding: 5px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.42), rgba(255,255,255,0.18));
+      border: 1px solid rgba(255,255,255,0.5);
+      box-shadow: 0 14px 32px rgba(120, 165, 144, 0.12), inset 0 1px 0 rgba(255,255,255,0.45);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav button {
+      padding: 10px 12px;
+      min-height: 60px;
+      min-width: 0;
+      flex: 0 1 auto;
+      font-size: 12px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--secondary);
+      background: rgba(255,255,255,0.1);
+      border-color: transparent;
+      border-radius: 999px;
+      box-shadow: none;
+    }
+
+    .nav button.active {
+      color: var(--text);
+      border-color: rgba(127, 180, 155, 0.36);
+      background: linear-gradient(180deg, rgba(201, 236, 217, 0.96), rgba(171, 216, 193, 0.78));
+      box-shadow: 0 8px 24px rgba(117, 163, 141, 0.16), inset 0 1px 0 rgba(255,255,255,0.52);
+    }
+
+    .divider {
+      color: rgba(205, 230, 220, 0.18);
+      text-align: center;
+      font-size: 14px;
+      user-select: none;
+      display: block;
+      line-height: 1;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 420px) {
+      .site { padding-left: 14px; padding-right: 14px; }
+      .topbar {
+        gap: 10px;
+      }
+      .brand {
+        font-size: 12px;
+        letter-spacing: 0.18em;
+      }
+      .back-breath {
+        min-height: 60px;
+        padding: 0 14px;
+        font-size: 15px;
+      }
+      .pattern-row,
+      .sound-row,
+      .nav { gap: 6px; }
+      .pattern-row,
+      .nav {
+        padding: 4px;
+      }
+      .pattern-button,
+      .sound-row button {
+        font-size: 12px;
+        letter-spacing: 0.03em;
+        padding: 10px 6px;
+      }
+      .nav {
+        width: 100%;
+        justify-content: stretch;
+      }
+      .nav button {
+        flex: 1 1 0;
+        width: 0;
+        padding: 8px 0;
+        font-size: 10px;
+        letter-spacing: 0.03em;
+      }
+      .divider {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site">
+    <header class="topbar">
+      <div class="brand">Ground</div>
+      <button class="back-breath" type="button" data-target="breath">Back to breath</button>
+    </header>
+
+    <main>
+      <section class="panel active" id="panel-breath" data-panel="breath">
+        <div class="hero">
+          <div class="eyebrow">Breathing guide</div>
+          <div class="breath-circle-wrap">
+            <div class="breath-circle" id="breathCircle" aria-live="polite">
+              <div class="breath-label">
+                <div class="phase" id="phaseLabel">Breathe in</div>
+                <div class="seconds" id="phaseSeconds">4s</div>
+              </div>
+            </div>
+          </div>
+          <div class="pattern-row" aria-label="Breathing patterns">
+            <button class="pattern-button active" type="button" data-pattern="478">4-7-8</button>
+            <button class="pattern-button" type="button" data-pattern="box">Box</button>
+            <button class="pattern-button" type="button" data-pattern="resonant">Resonant</button>
+          </div>
+          <div class="actions-row">
+            <button class="control-button" id="breathToggle" type="button">Start</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-sound" data-panel="sound" hidden>
+        <div class="hero">
+          <div class="eyebrow">Soundscapes</div>
+          <div class="sound-shell" id="soundShell">
+            <button class="sound-toggle" id="soundToggle" type="button" aria-expanded="false">
+              <span>Open sound panel</span>
+              <span id="soundState">Silent</span>
+            </button>
+            <div class="sound-details" id="soundDetails" hidden>
+              <p class="subtle">One layer at a time. Nothing starts until you tap play.</p>
+              <div class="sound-row">
+                <button type="button" data-sound="rain">Rain</button>
+                <button type="button" data-sound="ocean">Ocean</button>
+                <button type="button" data-sound="forest">Forest</button>
+              </div>
+              <div class="sound-actions">
+                <span id="soundNow">Selected: none</span>
+                <button class="sound-toggle" id="soundPlay" type="button">Play</button>
+              </div>
+              <label class="sound-volume">
+                <span>Volume</span>
+                <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.35" />
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-ground" data-panel="ground" hidden>
+        <div class="hero">
+          <div class="eyebrow">5-4-3-2-1 grounding</div>
+          <div class="ground-card">
+            <div class="ground-step active" data-step="0">
+              <div class="prompt-count">5 things you can see</div>
+              <div class="prompt-text">Look around and name five things in view. Let your eyes move slowly.</div>
+            </div>
+            <div class="ground-step" data-step="1">
+              <div class="prompt-count">4 things you can touch</div>
+              <div class="prompt-text">Find four surfaces. Press your hand into each one long enough to notice texture and temperature.</div>
+            </div>
+            <div class="ground-step" data-step="2">
+              <div class="prompt-count">3 things you can hear</div>
+              <div class="prompt-text">Pause. Catch three separate sounds, near or far.</div>
+            </div>
+            <div class="ground-step" data-step="3">
+              <div class="prompt-count">2 things you can smell</div>
+              <div class="prompt-text">Notice two scents in the air, on your clothes, or nearby objects.</div>
+            </div>
+            <div class="ground-step" data-step="4">
+              <div class="prompt-count">1 thing you can taste</div>
+              <div class="prompt-text">Notice the taste in your mouth or take a sip of water and focus on it.</div>
+            </div>
+            <button class="next-prompt" id="groundNext" type="button">Tap to continue</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-reset" data-panel="reset" hidden>
+        <div class="hero">
+          <div class="eyebrow">TIPP physiological reset</div>
+          <div class="reset-grid">
+            <button class="tile" type="button" data-reset="cold">
+              <div class="tile-state">Tap when done</div>
+              <h3>Cold water on face or hold ice</h3>
+              <p>Activates the dive reflex. Most people feel a shift in about 30 seconds.</p>
+              <p class="tile-meta">Timing: about 30 seconds</p>
+            </button>
+            <button class="tile" type="button" data-reset="exercise">
+              <div class="tile-state">Tap when done</div>
+              <h3>Intense exercise burst</h3>
+              <p>Move hard for 30 seconds to burn off some of the adrenaline load.</p>
+              <p class="tile-meta">Timing: 30 seconds</p>
+            </button>
+            <button class="tile" type="button" data-reset="exhale">
+              <div class="tile-state">Tap when done</div>
+              <h3>Paced slow exhale</h3>
+              <p>Keep the exhale twice as long as the inhale for one full minute.</p>
+              <p class="tile-meta">Timing: 1 minute</p>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-time" data-panel="time" hidden>
+        <div class="hero">
+          <div class="eyebrow">This will pass</div>
+          <div class="time-card">
+            <div class="timer" id="elapsedTimer">00:00</div>
+            <div class="time-copy" id="reassuranceText">Your body's alarm is going off. This is uncomfortable, not dangerous. You are safe.</div>
+            <p class="time-meta">This count starts from your first open and resets after more than two hours away.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-words" data-panel="words" hidden>
+        <div class="hero">
+          <div class="eyebrow">Stabilizing phrases</div>
+          <div class="words-card">
+            <div class="words-text" id="wordsText">Your heart is racing because it's been told to — it's doing its job. It will stop when the alarm ends.</div>
+            <p class="words-meta">A new phrase rotates every 12 seconds.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="nav" aria-label="Feature switcher">
+      <button class="active" type="button" data-target="breath">breath</button>
+      <span class="divider" aria-hidden="true">·</span>
+      <button type="button" data-target="sound">sound</button>
+      <span class="divider" aria-hidden="true">·</span>
+      <button type="button" data-target="ground">ground</button>
+      <span class="divider" aria-hidden="true">·</span>
+      <button type="button" data-target="reset">reset</button>
+      <span class="divider" aria-hidden="true">·</span>
+      <button type="button" data-target="time">time</button>
+      <span class="divider" aria-hidden="true">·</span>
+      <button type="button" data-target="words">words</button>
+    </nav>
+  </div>
+
+  <script>
+    (() => {
+      const STORAGE = {
+        pattern: 'ground-breath-pattern',
+        sound: 'ground-soundscape',
+        volume: 'ground-volume',
+        firstOpened: 'ground-first-opened',
+        lastSeen: 'ground-last-seen'
+      };
+
+      const breathPatterns = {
+        '478': [
+          { label: 'Breathe in', duration: 4, state: 'in' },
+          { label: 'Hold', duration: 7, state: 'hold' },
+          { label: 'Breathe out', duration: 8, state: 'out' }
+        ],
+        box: [
+          { label: 'Breathe in', duration: 4, state: 'in' },
+          { label: 'Hold', duration: 4, state: 'hold' },
+          { label: 'Breathe out', duration: 4, state: 'out' },
+          { label: 'Hold', duration: 4, state: 'hold' }
+        ],
+        resonant: [
+          { label: 'Breathe in', duration: 6, state: 'in' },
+          { label: 'Breathe out', duration: 6, state: 'out' }
+        ]
+      };
+
+      const phrases = [
+        "Your heart is racing because it's been told to — it's doing its job. It will stop when the alarm ends.",
+        "The feeling of unreality is your nervous system narrowing focus. It's temporary.",
+        "This is a smoke alarm without a fire.",
+        "Fast thoughts are part of the surge. They do not predict what happens next.",
+        "Adrenaline rises quickly and leaves in waves. You do not have to force it out.",
+        "Your chest can feel tight while your body is still getting enough air.",
+        "You can let the sensation be loud without treating it like a command.",
+        "The alarm gets quieter when your body stops arguing with it."
+      ];
+
+      const panelButtons = [...document.querySelectorAll('[data-target]')];
+      const panels = [...document.querySelectorAll('.panel')];
+      const backBreath = document.querySelector('.back-breath');
+      const breathCircle = document.getElementById('breathCircle');
+      const phaseLabel = document.getElementById('phaseLabel');
+      const phaseSeconds = document.getElementById('phaseSeconds');
+      const breathToggle = document.getElementById('breathToggle');
+      const patternButtons = [...document.querySelectorAll('.pattern-button')];
+      const groundSteps = [...document.querySelectorAll('.ground-step')];
+      const groundNext = document.getElementById('groundNext');
+      const resetTiles = [...document.querySelectorAll('.tile')];
+      const elapsedTimer = document.getElementById('elapsedTimer');
+      const reassuranceText = document.getElementById('reassuranceText');
+      const wordsText = document.getElementById('wordsText');
+      const soundShell = document.getElementById('soundShell');
+      const soundToggle = document.getElementById('soundToggle');
+      const soundState = document.getElementById('soundState');
+      const soundNow = document.getElementById('soundNow');
+      const soundPlay = document.getElementById('soundPlay');
+      const volumeSlider = document.getElementById('volumeSlider');
+      const soundButtons = [...document.querySelectorAll('.sound-row button')];
+
+      let activePanel = 'breath';
+      let selectedPattern = localStorage.getItem(STORAGE.pattern) || '478';
+      localStorage.setItem(STORAGE.pattern, selectedPattern);
+      let breathRunning = false;
+      let breathIndex = 0;
+      let phaseRemaining = breathPatterns[selectedPattern][0].duration;
+      let breathInterval = null;
+      let wordsIndex = 0;
+      let wordsInterval = null;
+      let groundIndex = 0;
+
+      const now = Date.now();
+      const lastSeen = Number(localStorage.getItem(STORAGE.lastSeen) || 0);
+      let firstOpened = Number(localStorage.getItem(STORAGE.firstOpened) || 0);
+      if (!firstOpened || (lastSeen && now - lastSeen > 2 * 60 * 60 * 1000)) {
+        firstOpened = now;
+        localStorage.setItem(STORAGE.firstOpened, String(firstOpened));
+      }
+      localStorage.setItem(STORAGE.lastSeen, String(now));
+      window.addEventListener('beforeunload', () => {
+        localStorage.setItem(STORAGE.lastSeen, String(Date.now()));
+      });
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+          localStorage.setItem(STORAGE.lastSeen, String(Date.now()));
+        } else {
+          const seen = Number(localStorage.getItem(STORAGE.lastSeen) || Date.now());
+          if (Date.now() - seen > 2 * 60 * 60 * 1000) {
+            firstOpened = Date.now();
+            localStorage.setItem(STORAGE.firstOpened, String(firstOpened));
+          }
+          localStorage.setItem(STORAGE.lastSeen, String(Date.now()));
+        }
+      });
+
+      function showPanel(target) {
+        activePanel = target;
+        panels.forEach(panel => {
+          const active = panel.dataset.panel === target;
+          panel.classList.toggle('active', active);
+          panel.hidden = !active;
+        });
+        panelButtons.forEach(button => button.classList.toggle('active', button.dataset.target === target));
+      }
+
+      panelButtons.forEach(button => {
+        button.addEventListener('click', () => showPanel(button.dataset.target));
+      });
+      backBreath.addEventListener('click', () => showPanel('breath'));
+
+      function applyBreathVisual(phase) {
+        breathCircle.classList.remove('expanded', 'hold');
+        if (phase.state === 'in') breathCircle.classList.add('expanded');
+        if (phase.state === 'hold') breathCircle.classList.add('hold');
+      }
+
+      function renderBreath() {
+        const phase = breathPatterns[selectedPattern][breathIndex];
+        phaseLabel.textContent = phase.label;
+        phaseSeconds.textContent = `${phaseRemaining}s`;
+        applyBreathVisual(phase);
+      }
+
+      function resetBreathCycle() {
+        breathIndex = 0;
+        phaseRemaining = breathPatterns[selectedPattern][0].duration;
+        renderBreath();
+      }
+
+      function stopBreath() {
+        breathRunning = false;
+        clearInterval(breathInterval);
+        breathInterval = null;
+        breathToggle.textContent = 'Start';
+        resetBreathCycle();
+      }
+
+      function startBreath() {
+        if (breathRunning) return;
+        breathRunning = true;
+        breathToggle.textContent = 'Stop';
+        resetBreathCycle();
+        breathInterval = setInterval(() => {
+          phaseRemaining -= 1;
+          if (phaseRemaining <= 0) {
+            breathIndex = (breathIndex + 1) % breathPatterns[selectedPattern].length;
+            phaseRemaining = breathPatterns[selectedPattern][breathIndex].duration;
+          }
+          renderBreath();
+        }, 1000);
+      }
+
+      breathToggle.addEventListener('click', () => {
+        if (breathRunning) {
+          stopBreath();
+        } else {
+          startBreath();
+        }
+      });
+
+      patternButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          selectedPattern = button.dataset.pattern;
+          localStorage.setItem(STORAGE.pattern, selectedPattern);
+          patternButtons.forEach(item => item.classList.toggle('active', item === button));
+          if (breathRunning) {
+            clearInterval(breathInterval);
+            breathRunning = false;
+            startBreath();
+          } else {
+            resetBreathCycle();
+          }
+        });
+      });
+
+      patternButtons.forEach(button => button.classList.toggle('active', button.dataset.pattern === selectedPattern));
+      resetBreathCycle();
+
+      function renderGroundStep() {
+        groundSteps.forEach((step, index) => step.classList.toggle('active', index === groundIndex));
+        groundNext.textContent = groundIndex === groundSteps.length - 1 ? 'Start again' : 'Tap to continue';
+      }
+
+      groundNext.addEventListener('click', () => {
+        groundIndex = (groundIndex + 1) % groundSteps.length;
+        renderGroundStep();
+      });
+
+      resetTiles.forEach(tile => {
+        tile.addEventListener('click', () => {
+          const done = tile.classList.toggle('done');
+          tile.querySelector('.tile-state').textContent = done ? 'Done' : 'Tap when done';
+        });
+      });
+
+      function formatTime(ms) {
+        const total = Math.max(0, Math.floor(ms / 1000));
+        const minutes = String(Math.floor(total / 60)).padStart(2, '0');
+        const seconds = String(total % 60).padStart(2, '0');
+        return `${minutes}:${seconds}`;
+      }
+
+      function renderTimer() {
+        const elapsed = Date.now() - firstOpened;
+        elapsedTimer.textContent = formatTime(elapsed);
+        const minutes = elapsed / 60000;
+        if (minutes < 5) {
+          reassuranceText.textContent = "Your body's alarm is going off. This is uncomfortable, not dangerous. You are safe.";
+        } else if (minutes < 15) {
+          reassuranceText.textContent = "The peak usually passes within 10 minutes. You're in the hardest part.";
+        } else {
+          reassuranceText.textContent = "You've done the hard work. The tail is always easier than the peak.";
+        }
+      }
+      renderTimer();
+      setInterval(renderTimer, 1000);
+
+      function rotatePhrase() {
+        wordsText.classList.add('fading');
+        setTimeout(() => {
+          wordsIndex = (wordsIndex + 1) % phrases.length;
+          wordsText.textContent = phrases[wordsIndex];
+          wordsText.classList.remove('fading');
+        }, 1500);
+      }
+      wordsInterval = setInterval(rotatePhrase, 12000);
+
+      soundToggle.addEventListener('click', () => {
+        const open = soundShell.classList.toggle('open');
+        soundToggle.classList.toggle('active', open);
+        soundToggle.setAttribute('aria-expanded', String(open));
+        document.getElementById('soundDetails').hidden = !open;
+        soundToggle.querySelector('span').textContent = open ? 'Close sound panel' : 'Open sound panel';
+      });
+
+      let audioCtx = null;
+      let masterGain = null;
+      let soundGraph = null;
+      let selectedSound = localStorage.getItem(STORAGE.sound) || 'rain';
+      let selectedVolume = Number(localStorage.getItem(STORAGE.volume) || 0.35);
+      localStorage.setItem(STORAGE.sound, selectedSound);
+      localStorage.setItem(STORAGE.volume, String(selectedVolume));
+      let forestTimer = null;
+      let brownBuffer = null;
+      let pinkBuffer = null;
+
+      function buildBrownNoiseBuffer(context, duration = 2) {
+        const length = Math.floor(context.sampleRate * duration);
+        const buffer = context.createBuffer(1, length, context.sampleRate);
+        const output = buffer.getChannelData(0);
+        let lastOut = 0;
+        for (let i = 0; i < output.length; i += 1) {
+          const white = Math.random() * 2 - 1;
+          lastOut = (lastOut + 0.02 * white) / 1.02;
+          output[i] = lastOut * 3.5;
+        }
+        return buffer;
+      }
+
+      function buildPinkNoiseBuffer(context, duration = 2) {
+        const length = Math.floor(context.sampleRate * duration);
+        const buffer = context.createBuffer(1, length, context.sampleRate);
+        const output = buffer.getChannelData(0);
+        let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+        for (let i = 0; i < output.length; i += 1) {
+          const white = Math.random() * 2 - 1;
+          b0 = 0.9986 * b0 + white * 0.0555179;
+          b1 = 0.99332 * b1 + white * 0.0750759;
+          b2 = 0.96900 * b2 + white * 0.1538520;
+          b3 = 0.86650 * b3 + white * 0.3104856;
+          b4 = 0.55000 * b4 + white * 0.5329522;
+          b5 = -0.7616 * b5 - white * 0.0168980;
+          const pink = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+          b6 = white * 0.115926;
+          output[i] = pink * 0.11;
+        }
+        return buffer;
+      }
+
+      function createNoiseSource(context, color) {
+        const source = context.createBufferSource();
+        if (color === 'pink') {
+          pinkBuffer ||= buildPinkNoiseBuffer(context);
+          source.buffer = pinkBuffer;
+        } else {
+          brownBuffer ||= buildBrownNoiseBuffer(context);
+          source.buffer = brownBuffer;
+        }
+        source.loop = true;
+        return source;
+      }
+
+      async function ensureAudio() {
+        if (!audioCtx) {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          audioCtx = new Ctx();
+          masterGain = audioCtx.createGain();
+          masterGain.gain.value = selectedVolume;
+          masterGain.connect(audioCtx.destination);
+        }
+        if (audioCtx.state === 'suspended') {
+          await audioCtx.resume();
+        }
+        return audioCtx;
+      }
+
+      function clearForestTimer() {
+        if (forestTimer) {
+          clearTimeout(forestTimer);
+          forestTimer = null;
+        }
+      }
+
+      function stopCurrentSound() {
+        clearForestTimer();
+        if (!soundGraph) return;
+        try {
+          soundGraph.noise?.stop();
+          soundGraph.lfo?.stop();
+        } catch (error) {}
+        try {
+          soundGraph.noise?.disconnect();
+          soundGraph.filter?.disconnect();
+          soundGraph.gain?.disconnect();
+          soundGraph.lfoGain?.disconnect();
+          soundGraph.lfo?.disconnect();
+        } catch (error) {}
+        soundGraph = null;
+        soundState.textContent = 'Silent';
+        soundPlay.textContent = 'Play';
+      }
+
+      function scheduleForestBell(filterGain) {
+        clearForestTimer();
+        const delay = 25000 + Math.random() * 35000;
+        forestTimer = setTimeout(() => {
+          if (!audioCtx || !soundGraph || soundGraph.type !== 'forest') return;
+          const osc = audioCtx.createOscillator();
+          const bellGain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = 523;
+          bellGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+          bellGain.gain.exponentialRampToValueAtTime(0.12, audioCtx.currentTime + 0.02);
+          bellGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.3);
+          osc.connect(bellGain);
+          bellGain.connect(filterGain);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.31);
+          osc.onended = () => {
+            try { osc.disconnect(); bellGain.disconnect(); } catch (error) {}
+          };
+          scheduleForestBell(filterGain);
+        }, delay);
+      }
+
+      async function playSelectedSound() {
+        await ensureAudio();
+        stopCurrentSound();
+        const gain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+        const lfo = audioCtx.createOscillator();
+        const lfoGain = audioCtx.createGain();
+        const noise = createNoiseSource(audioCtx, selectedSound === 'forest' ? 'pink' : 'brown');
+
+        filter.type = 'lowpass';
+        if (selectedSound === 'rain') {
+          filter.frequency.value = 400;
+          lfo.frequency.value = 0.12;
+          lfoGain.gain.value = 0.09;
+          gain.gain.value = 0.42;
+        } else if (selectedSound === 'ocean') {
+          filter.frequency.value = 250;
+          lfo.frequency.value = 0.08;
+          lfoGain.gain.value = 0.14;
+          gain.gain.value = 0.48;
+        } else {
+          filter.frequency.value = 800;
+          lfo.frequency.value = 0.05;
+          lfoGain.gain.value = 0.05;
+          gain.gain.value = 0.32;
+        }
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+
+        lfo.type = 'sine';
+        lfo.connect(lfoGain);
+        lfoGain.connect(gain.gain);
+        noise.start();
+        lfo.start();
+
+        soundGraph = { noise, filter, gain, lfo, lfoGain, type: selectedSound };
+        if (selectedSound === 'forest') {
+          scheduleForestBell(gain);
+        }
+        soundState.textContent = selectedSound[0].toUpperCase() + selectedSound.slice(1);
+        soundPlay.textContent = 'Stop';
+      }
+
+      function setSelectedSound(sound) {
+        selectedSound = sound;
+        localStorage.setItem(STORAGE.sound, selectedSound);
+        soundButtons.forEach(button => button.classList.toggle('active', button.dataset.sound === sound));
+        soundNow.textContent = `Selected: ${sound}`;
+        if (soundGraph) {
+          playSelectedSound();
+        }
+      }
+
+      soundButtons.forEach(button => {
+        button.addEventListener('click', () => setSelectedSound(button.dataset.sound));
+      });
+
+      soundPlay.addEventListener('click', async () => {
+        if (soundGraph) {
+          stopCurrentSound();
+        } else {
+          await playSelectedSound();
+        }
+      });
+
+      volumeSlider.value = String(selectedVolume);
+      volumeSlider.addEventListener('input', () => {
+        selectedVolume = Number(volumeSlider.value);
+        localStorage.setItem(STORAGE.volume, String(selectedVolume));
+        if (masterGain) masterGain.gain.value = selectedVolume;
+      });
+
+      setSelectedSound(selectedSound);
+      renderGroundStep();
+      showPanel('breath');
+    })();
+  </script>
+</body>
+</html>
