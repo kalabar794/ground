@@ -33,7 +33,6 @@
       background: var(--bg);
       color: var(--text);
       font-family: 'Inter', system-ui, sans-serif;
-      overflow: hidden;
     }
 
     body {
@@ -42,6 +41,8 @@
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       font-feature-settings: "cv01", "ss03";
+      overflow-x: hidden;
+      overflow-y: auto;
     }
 
     button, input, select {
@@ -51,9 +52,10 @@
 
     .site {
       min-height: 100vh;
+      min-height: 100dvh;
       display: grid;
       grid-template-rows: auto 1fr auto;
-      padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+      padding: max(18px, env(safe-area-inset-top)) 18px max(calc(18px + env(safe-area-inset-bottom)), 18px);
       gap: 14px;
       background:
         radial-gradient(ellipse at 12% 18%, rgba(255,255,255,0.92), transparent 26%),
@@ -126,6 +128,9 @@
       display: flex;
       flex-direction: column;
       min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 2px;
     }
 
     .panel.active {
