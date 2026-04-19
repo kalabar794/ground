@@ -1085,24 +1085,25 @@
         const filter = audioCtx.createBiquadFilter();
         const lfo = audioCtx.createOscillator();
         const lfoGain = audioCtx.createGain();
-        const noise = createNoiseSource(audioCtx, selectedSound === 'forest' ? 'pink' : 'brown');
+        const sourceColor = selectedSound === 'ocean' ? 'brown' : 'pink';
+        const noise = createNoiseSource(audioCtx, sourceColor);
 
         filter.type = 'lowpass';
         if (selectedSound === 'rain') {
-          filter.frequency.value = 400;
-          lfo.frequency.value = 0.12;
-          lfoGain.gain.value = 0.09;
-          gain.gain.value = 0.42;
+          filter.frequency.value = 1800;
+          lfo.frequency.value = 0.16;
+          lfoGain.gain.value = 0.06;
+          gain.gain.value = 0.5;
         } else if (selectedSound === 'ocean') {
-          filter.frequency.value = 250;
-          lfo.frequency.value = 0.08;
-          lfoGain.gain.value = 0.14;
-          gain.gain.value = 0.48;
+          filter.frequency.value = 950;
+          lfo.frequency.value = 0.09;
+          lfoGain.gain.value = 0.12;
+          gain.gain.value = 0.58;
         } else {
-          filter.frequency.value = 800;
+          filter.frequency.value = 2200;
           lfo.frequency.value = 0.05;
-          lfoGain.gain.value = 0.05;
-          gain.gain.value = 0.32;
+          lfoGain.gain.value = 0.04;
+          gain.gain.value = 0.42;
         }
 
         noise.connect(filter);
