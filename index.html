@@ -528,6 +528,176 @@
       transform: translateY(-1px);
     }
 
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panic-button,
+    .support-link,
+    .control-button.secondary,
+    .launcher-card,
+    .tool-card,
+    .field-label textarea,
+    .field-label input {
+      font: inherit;
+    }
+
+    .panic-button {
+      min-height: 60px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(191, 120, 120, 0.24);
+      color: #6b2c34;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,236,238,0.84));
+      box-shadow: 0 12px 28px rgba(189, 116, 124, 0.12);
+    }
+
+    .launcher-grid,
+    .support-grid {
+      width: min(100%, 680px);
+      display: grid;
+      gap: 12px;
+    }
+
+    .launcher-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 6px;
+    }
+
+    .launcher-card,
+    .tool-card,
+    .rescue-card {
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.72);
+      background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.4));
+      box-shadow: 0 18px 40px rgba(129, 170, 148, 0.1);
+      backdrop-filter: blur(18px);
+    }
+
+    .launcher-card {
+      min-height: 112px;
+      padding: 16px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      color: var(--text);
+    }
+
+    .launcher-card strong {
+      font-size: 16px;
+      line-height: 1.2;
+    }
+
+    .launcher-card span,
+    .memory-text,
+    .status-pill,
+    .support-link {
+      color: var(--secondary);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .rescue-card,
+    .tool-card {
+      padding: 18px;
+    }
+
+    .support-grid {
+      margin-bottom: 12px;
+    }
+
+    .panic-actions,
+    .support-actions,
+    .inline-actions,
+    .field-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .support-link {
+      min-height: 52px;
+      padding: 14px 16px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.66);
+      background: rgba(255,255,255,0.52);
+    }
+
+    .field-label {
+      display: grid;
+      gap: 8px;
+      color: var(--secondary);
+      font-size: 13px;
+    }
+
+    .field-label textarea,
+    .field-label input {
+      width: 100%;
+      border: 1px solid rgba(154, 196, 172, 0.24);
+      background: rgba(255,255,255,0.72);
+      border-radius: 18px;
+      padding: 12px 14px;
+      color: var(--text);
+      min-height: 52px;
+    }
+
+    .field-label textarea {
+      min-height: 88px;
+      resize: vertical;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.54);
+      border: 1px solid rgba(255,255,255,0.64);
+    }
+
+    .sleep-mode {
+      --bg: #edf0fb;
+      --bg-elevated: #f5f6fd;
+      --panel: rgba(245, 245, 255, 0.56);
+      --panel-strong: rgba(255, 255, 255, 0.72);
+      --accent: #a7afe5;
+      --accent-soft: rgba(167, 175, 229, 0.24);
+      --text: #31406b;
+      --secondary: #7080a9;
+    }
+
+    .sleep-mode .site {
+      background:
+        radial-gradient(ellipse at 12% 18%, rgba(255,255,255,0.82), transparent 26%),
+        radial-gradient(ellipse at 84% 14%, rgba(216, 222, 255, 0.78), transparent 34%),
+        radial-gradient(ellipse at 50% 42%, rgba(193, 203, 245, 0.44), transparent 40%),
+        radial-gradient(ellipse at 50% 88%, rgba(235, 238, 255, 0.84), transparent 34%),
+        linear-gradient(180deg, #f7f8ff 0%, #edf0fb 44%, #e5e9fb 100%);
+    }
+
+    @media (max-width: 640px) {
+      .launcher-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .topbar-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+
     @media (max-width: 420px) {
       .site { padding-left: 14px; padding-right: 14px; }
       .topbar {
@@ -576,7 +746,10 @@
   <div class="site">
     <header class="topbar">
       <div class="brand">Ground</div>
-      <button class="back-breath" type="button" data-target="breath">Back to breath</button>
+      <div class="topbar-actions">
+        <button class="panic-button" id="panicButton" type="button">Help now</button>
+        <button class="back-breath" type="button" data-target="breath">Back to breath</button>
+      </div>
     </header>
 
     <main>
@@ -598,6 +771,68 @@
           </div>
           <div class="actions-row">
             <button class="control-button" id="breathToggle" type="button">Start</button>
+          </div>
+          <div class="launcher-grid" aria-label="What do you need right now?">
+            <button class="launcher-card" type="button" data-need="body">
+              <strong>Calm my body</strong>
+              <span>Switch to a longer exhale and start breathing now.</span>
+            </button>
+            <button class="launcher-card" type="button" data-need="spiral">
+              <strong>Stop spiraling</strong>
+              <span>Jump to stabilizing phrases and a short voice cue.</span>
+            </button>
+            <button class="launcher-card" type="button" data-need="sleep">
+              <strong>Fall asleep</strong>
+              <span>Enable sleep mode with softer visuals and sound.</span>
+            </button>
+            <button class="launcher-card" type="button" data-need="real">
+              <strong>Feel real again</strong>
+              <span>Open grounding prompts for dissociation and floaty panic.</span>
+            </button>
+          </div>
+          <section class="rescue-card" id="panicCard" aria-live="polite">
+            <div class="eyebrow">Fast relief</div>
+            <h2 id="panicTitle">What do you need right now?</h2>
+            <p class="subtle" id="panicMessage">Pick one path. You do not need to do everything.</p>
+            <div class="panic-actions">
+              <button class="control-button" id="voiceGuideButton" type="button">Play voice guide</button>
+              <button class="control-button secondary" id="sleepModeToggle" type="button" aria-pressed="false">Sleep mode off</button>
+              <button class="control-button secondary" id="hapticsToggle" type="button" aria-pressed="true">Haptics on</button>
+            </div>
+            <div class="support-actions">
+              <a class="support-link" id="contactCall" href="tel:">Call support contact</a>
+              <a class="support-link" href="tel:988">Call 988</a>
+            </div>
+          </section>
+          <div class="support-grid">
+            <section class="tool-card">
+              <div class="eyebrow">What helped last time</div>
+              <div class="memory-text" id="memoryText">No session memory yet. Use one of the quick actions and it will show up here.</div>
+            </section>
+            <section class="tool-card">
+              <div class="eyebrow">Safety plan</div>
+              <label class="field-label">Warning signs<textarea id="warningSigns" placeholder="What tells you a wave is starting?"></textarea></label>
+              <label class="field-label">What helps<textarea id="helpfulActions" placeholder="What usually helps: breathe, cold water, walk, call someone..."></textarea></label>
+              <div class="field-row">
+                <label class="field-label"><span>Support name</span><input id="contactName" type="text" placeholder="Friend, partner, therapist" /></label>
+                <label class="field-label"><span>Phone</span><input id="contactPhone" type="tel" placeholder="5551234567" /></label>
+              </div>
+              <div class="inline-actions">
+                <button class="control-button secondary" id="savePlan" type="button">Save plan</button>
+                <span class="status-pill" id="planStatus">Stored locally on this device.</span>
+              </div>
+            </section>
+            <section class="tool-card">
+              <div class="eyebrow">Quick check-in</div>
+              <label class="field-label"><span>Intensity</span><input id="intensityInput" type="range" min="1" max="10" value="5" /><span class="status-pill" id="intensityValue">5 / 10</span></label>
+              <label class="field-label">Trigger<textarea id="triggerInput" placeholder="What kicked this off?"></textarea></label>
+              <label class="field-label">What helped<textarea id="helpedInput" placeholder="What helped, even a little?"></textarea></label>
+              <div class="inline-actions">
+                <button class="control-button secondary" id="saveCheckIn" type="button">Save check-in</button>
+                <span class="status-pill" id="checkInStatus">Newest entry stays on this device.</span>
+              </div>
+              <div class="memory-text" id="lastCheckIn">No saved check-in yet.</div>
+            </section>
           </div>
         </div>
       </section>
@@ -729,7 +964,13 @@
         sound: 'ground-soundscape',
         volume: 'ground-volume',
         firstOpened: 'ground-first-opened',
-        lastSeen: 'ground-last-seen'
+        lastSeen: 'ground-last-seen',
+        safetyPlan: 'ground-safety-plan',
+        checkIn: 'ground-check-in',
+        quickMemory: 'ground-quick-memory',
+        sleepMode: 'ground-sleep-mode',
+        haptics: 'ground-haptics',
+        voiceGuide: 'ground-voice-guide'
       };
 
       const breathPatterns = {
@@ -782,6 +1023,28 @@
       const soundPlay = document.getElementById('soundPlay');
       const volumeSlider = document.getElementById('volumeSlider');
       const soundButtons = [...document.querySelectorAll('.sound-row button')];
+      const panicButton = document.getElementById('panicButton');
+      const launcherButtons = [...document.querySelectorAll('[data-need]')];
+      const panicTitle = document.getElementById('panicTitle');
+      const panicMessage = document.getElementById('panicMessage');
+      const voiceGuideButton = document.getElementById('voiceGuideButton');
+      const sleepModeToggle = document.getElementById('sleepModeToggle');
+      const hapticsToggle = document.getElementById('hapticsToggle');
+      const memoryText = document.getElementById('memoryText');
+      const warningSigns = document.getElementById('warningSigns');
+      const helpfulActions = document.getElementById('helpfulActions');
+      const contactName = document.getElementById('contactName');
+      const contactPhone = document.getElementById('contactPhone');
+      const savePlan = document.getElementById('savePlan');
+      const planStatus = document.getElementById('planStatus');
+      const contactCall = document.getElementById('contactCall');
+      const intensityInput = document.getElementById('intensityInput');
+      const intensityValue = document.getElementById('intensityValue');
+      const triggerInput = document.getElementById('triggerInput');
+      const helpedInput = document.getElementById('helpedInput');
+      const saveCheckIn = document.getElementById('saveCheckIn');
+      const checkInStatus = document.getElementById('checkInStatus');
+      const lastCheckIn = document.getElementById('lastCheckIn');
 
       let activePanel = 'breath';
       let selectedPattern = localStorage.getItem(STORAGE.pattern) || '478';
@@ -793,6 +1056,9 @@
       let wordsIndex = 0;
       let wordsInterval = null;
       let groundIndex = 0;
+      let sleepMode = localStorage.getItem(STORAGE.sleepMode) === '1';
+      let hapticsEnabled = localStorage.getItem(STORAGE.haptics) !== '0';
+      let voiceGuideEnabled = localStorage.getItem(STORAGE.voiceGuide) !== '0';
 
       const now = Date.now();
       const lastSeen = Number(localStorage.getItem(STORAGE.lastSeen) || 0);
@@ -818,6 +1084,154 @@
         }
       });
 
+      const needActions = {
+        body: {
+          title: 'Calm your body first',
+          message: 'Long exhale. Unclench your jaw. Let your shoulders drop while the timer runs.',
+          speak: 'Let your next exhale be longer than your inhale. Drop your shoulders. You do not need to force calm. Just lengthen the exhale.'
+        },
+        spiral: {
+          title: 'Come back from the spiral',
+          message: 'Read one phrase at a time. You do not have to answer every scary thought.',
+          speak: 'These thoughts are part of the surge. You do not need to solve them right now. Come back to one true thing in the room.'
+        },
+        sleep: {
+          title: 'Shift toward sleep',
+          message: 'Dim the page, slow the breath, and let sound carry some of the work.',
+          speak: 'Nothing else needs to happen tonight. Just let your exhale get heavier and slower.'
+        },
+        real: {
+          title: 'Orient to the room',
+          message: 'Use grounding prompts slowly. Press into surfaces and name what is actually here.',
+          speak: 'Look for three edges in the room. Feel the weight of your body. You are here, even if your body feels far away.'
+        },
+        help: {
+          title: 'Get support now',
+          message: 'If you need a real person, call your support contact or 988. You do not have to muscle through this alone.',
+          speak: 'You deserve support. If you need a person, call now. Help counts.'
+        }
+      };
+
+      function maybeVibrate(pattern = [12]) {
+        if (hapticsEnabled && navigator.vibrate) navigator.vibrate(pattern);
+      }
+
+      function syncContactCall() {
+        const phone = contactPhone.value.trim();
+        contactCall.href = phone ? `tel:${phone}` : 'tel:';
+        contactCall.textContent = phone ? `Call ${contactName.value.trim() || 'support contact'}` : 'Add a support number below';
+      }
+
+      function renderMemory() {
+        try {
+          const memory = JSON.parse(localStorage.getItem(STORAGE.quickMemory) || 'null');
+          if (!memory) {
+            memoryText.textContent = 'No session memory yet. Use one of the quick actions and it will show up here.';
+            return;
+          }
+          memoryText.textContent = `Last time you used ${memory.needLabel}. Pattern: ${memory.pattern}. Sound: ${memory.sound}. ${memory.helped ? `It helped because: ${memory.helped}` : 'Add what helped in the check-in below.'}`;
+        } catch {
+          memoryText.textContent = 'No session memory yet. Use one of the quick actions and it will show up here.';
+        }
+      }
+
+      function rememberNeed(needKey) {
+        const labelMap = {
+          body: 'Calm my body',
+          spiral: 'Stop spiraling',
+          sleep: 'Fall asleep',
+          real: 'Feel real again',
+          help: 'Get help now'
+        };
+        localStorage.setItem(STORAGE.quickMemory, JSON.stringify({
+          need: needKey,
+          needLabel: labelMap[needKey],
+          pattern: selectedPattern,
+          sound: selectedSound,
+          helped: (JSON.parse(localStorage.getItem(STORAGE.checkIn) || 'null') || {}).helped || ''
+        }));
+        renderMemory();
+      }
+
+      function speakText(text) {
+        if (!voiceGuideEnabled || !('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.9;
+        utterance.pitch = 0.95;
+        window.speechSynthesis.speak(utterance);
+      }
+
+      function setSleepMode(enabled) {
+        sleepMode = enabled;
+        localStorage.setItem(STORAGE.sleepMode, enabled ? '1' : '0');
+        document.body.classList.toggle('sleep-mode', enabled);
+        sleepModeToggle.textContent = enabled ? 'Sleep mode on' : 'Sleep mode off';
+        sleepModeToggle.setAttribute('aria-pressed', String(enabled));
+      }
+
+      function renderPlan() {
+        try {
+          const plan = JSON.parse(localStorage.getItem(STORAGE.safetyPlan) || 'null');
+          if (plan) {
+            warningSigns.value = plan.warningSigns || '';
+            helpfulActions.value = plan.helpfulActions || '';
+            contactName.value = plan.contactName || '';
+            contactPhone.value = plan.contactPhone || '';
+          }
+        } catch {}
+        syncContactCall();
+      }
+
+      function renderCheckIn() {
+        try {
+          const entry = JSON.parse(localStorage.getItem(STORAGE.checkIn) || 'null');
+          if (!entry) {
+            lastCheckIn.textContent = 'No saved check-in yet.';
+            return;
+          }
+          intensityInput.value = String(entry.intensity || 5);
+          intensityValue.textContent = `${entry.intensity || 5} / 10`;
+          triggerInput.value = entry.trigger || '';
+          helpedInput.value = entry.helped || '';
+          lastCheckIn.textContent = `Latest check-in: intensity ${entry.intensity || 5}/10. Trigger: ${entry.trigger || 'not logged'}. Helped: ${entry.helped || 'not logged'}.`;
+        } catch {
+          lastCheckIn.textContent = 'No saved check-in yet.';
+        }
+      }
+
+      function activateNeed(needKey) {
+        const config = needActions[needKey];
+        if (!config) return;
+        panicTitle.textContent = config.title;
+        panicMessage.textContent = config.message;
+        maybeVibrate([14, 30, 14]);
+        if (needKey === 'body') {
+          selectedPattern = 'resonant';
+          localStorage.setItem(STORAGE.pattern, selectedPattern);
+          patternButtons.forEach(item => item.classList.toggle('active', item.dataset.pattern === selectedPattern));
+          if (!breathRunning) startBreath(); else resetBreathCycle();
+          showPanel('breath');
+        } else if (needKey === 'spiral') {
+          showPanel('words');
+        } else if (needKey === 'sleep') {
+          setSleepMode(true);
+          showPanel('sound');
+          soundShell.classList.add('open');
+          soundToggle.classList.add('active');
+          soundToggle.setAttribute('aria-expanded', 'true');
+          document.getElementById('soundDetails').hidden = false;
+          soundToggle.querySelector('span').textContent = 'Close sound panel';
+          setSelectedSound('ocean');
+        } else if (needKey === 'real') {
+          showPanel('ground');
+        } else if (needKey === 'help') {
+          showPanel('breath');
+        }
+        rememberNeed(needKey);
+        speakText(config.speak);
+      }
+
       function showPanel(target) {
         activePanel = target;
         panels.forEach(panel => {
@@ -826,12 +1240,52 @@
           panel.hidden = !active;
         });
         panelButtons.forEach(button => button.classList.toggle('active', button.dataset.target === target));
+        if (target === 'breath') backBreath.hidden = true;
+        else backBreath.hidden = false;
       }
 
       panelButtons.forEach(button => {
         button.addEventListener('click', () => showPanel(button.dataset.target));
       });
       backBreath.addEventListener('click', () => showPanel('breath'));
+      panicButton.addEventListener('click', () => activateNeed('help'));
+      launcherButtons.forEach(button => button.addEventListener('click', () => activateNeed(button.dataset.need)));
+      voiceGuideButton.addEventListener('click', () => speakText(panicMessage.textContent));
+      sleepModeToggle.addEventListener('click', () => setSleepMode(!sleepMode));
+      hapticsToggle.addEventListener('click', () => {
+        hapticsEnabled = !hapticsEnabled;
+        localStorage.setItem(STORAGE.haptics, hapticsEnabled ? '1' : '0');
+        hapticsToggle.textContent = hapticsEnabled ? 'Haptics on' : 'Haptics off';
+        hapticsToggle.setAttribute('aria-pressed', String(hapticsEnabled));
+        maybeVibrate([10]);
+      });
+      savePlan.addEventListener('click', () => {
+        localStorage.setItem(STORAGE.safetyPlan, JSON.stringify({
+          warningSigns: warningSigns.value,
+          helpfulActions: helpfulActions.value,
+          contactName: contactName.value,
+          contactPhone: contactPhone.value
+        }));
+        planStatus.textContent = 'Plan saved on this device.';
+        syncContactCall();
+      });
+      contactName.addEventListener('input', syncContactCall);
+      contactPhone.addEventListener('input', syncContactCall);
+      intensityInput.addEventListener('input', () => {
+        intensityValue.textContent = `${intensityInput.value} / 10`;
+      });
+      saveCheckIn.addEventListener('click', () => {
+        const entry = {
+          intensity: Number(intensityInput.value),
+          trigger: triggerInput.value.trim(),
+          helped: helpedInput.value.trim(),
+          updatedAt: new Date().toISOString()
+        };
+        localStorage.setItem(STORAGE.checkIn, JSON.stringify(entry));
+        checkInStatus.textContent = 'Check-in saved on this device.';
+        renderCheckIn();
+        renderMemory();
+      });
 
       function applyBreathVisual(phase) {
         breathCircle.classList.remove('expanded', 'hold');
@@ -870,6 +1324,10 @@
           if (phaseRemaining <= 0) {
             breathIndex = (breathIndex + 1) % breathPatterns[selectedPattern].length;
             phaseRemaining = breathPatterns[selectedPattern][breathIndex].duration;
+            maybeVibrate(breathPatterns[selectedPattern][breathIndex].state === 'out' ? [18, 40, 18] : [12]);
+            if (voiceGuideEnabled && breathPatterns[selectedPattern][breathIndex].state === 'out' && activePanel === 'breath' && sleepMode) {
+              speakText('Slow exhale. Let your body get heavier.');
+            }
           }
           renderBreath();
         }, 1000);
@@ -1155,6 +1613,18 @@
 
       setSelectedSound(selectedSound);
       renderGroundStep();
+      renderPlan();
+      renderCheckIn();
+      renderMemory();
+      setSleepMode(sleepMode);
+      hapticsToggle.textContent = hapticsEnabled ? 'Haptics on' : 'Haptics off';
+      hapticsToggle.setAttribute('aria-pressed', String(hapticsEnabled));
+      backBreath.hidden = true;
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').catch(() => {});
+        });
+      }
       showPanel('breath');
     })();
   </script>

@@ -1,0 +1,10 @@
+{
+  "name": "Ground",
+  "short_name": "Ground",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#edf8f1",
+  "theme_color": "#edf8f1",
+  "description": "Fast grounding, breathing, and panic support that works offline.",
+  "icons": []
+}
